@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { CameraController } from './cameraController';
 import { World } from './world';
+import { preload } from './preload';
 
 export class MainScene {
   private cube: THREE.Mesh | null;
@@ -25,22 +26,31 @@ export class MainScene {
     window.addEventListener('resize', this.debounce(this.resize.bind(this), 100));
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    this.world.setup();
-    this.world.addFloor();
-    // this.world.build();
-    this.world.layTrack();
+    // this.initPostprocessing();
+
+    this.load();
     return this.renderer;
   }
 
-  animate() {
+  async load() {
+    await preload.load();
+
+    this.world.setup();
+    this.world.addFloor();
+    this.world.build();
+    this.world.layTrack();
+  }
+
+  animate(time: number) {
     requestAnimationFrame(this.animate.bind(this));
 
-    // const delta = time - this.then;
-    // this.then = time;
-    // console.log(delta);
+    const delta = (time - this.then) / 16.67; // Normalize delta time to 60fps
+    this.then = time;
+    this.world.animate(delta);
 
     this.renderer.render(this.scene, this.camera.getCamera());
   }

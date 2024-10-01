@@ -13,20 +13,21 @@ export class CameraController {
 
   constructor(scene: Scene, domElement: HTMLCanvasElement) {
     this.scene = scene;
-    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    this.camera = new PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 100);
     this.controls = new MapControls(this.camera, domElement);
     this.setup();
   }
 
   setup() {
-    window.addEventListener('pointerdown', this.onPointerDown.bind(this));
+    // window.addEventListener('pointerdown', this.onPointerDown.bind(this));
 
-    this.camera.position.z = 5;
-    this.camera.position.y = 4;
-    this.camera.lookAt(0, 0, 0);
+    this.camera.position.z = 10;
+    this.camera.position.x = 0;
+    this.camera.position.y = 10;
+
+    this.controls.maxPolarAngle = Math.PI / 3;
+    this.controls.target = new Vector3(-5, 0, 0);
     this.controls.update();
-
-    this.controls.maxPolarAngle = Math.PI / 2;
   }
 
   update() {

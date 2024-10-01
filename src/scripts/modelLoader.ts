@@ -10,8 +10,6 @@ export class ModelLoader {
 
   async loadModel(path: string): Promise<Group | null> {
     const modelUrl = new URL(path, import.meta.url).href;
-    console.log(modelUrl);
-
     return new Promise((resolve, reject) => {
       this.loader.load(
         modelUrl,

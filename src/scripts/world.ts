@@ -7,8 +7,8 @@ import {
   PlaneGeometry,
   Scene
 } from 'three';
-import { ModelLoader } from './modelLoader';
 import { TrainLine } from './trainline';
+import { preload } from './preload';
 
 export class World {
   private scene: Scene;
@@ -23,11 +23,11 @@ export class World {
     const sun = new DirectionalLight(0xffffff, 5);
     sun.position.set(5, 5, 5);
     sun.castShadow = true;
-    sun.shadow.camera.top = 10;
-    sun.shadow.camera.bottom = -10;
-    sun.shadow.camera.left = -10;
+    sun.shadow.camera.top = 20;
+    sun.shadow.camera.bottom = -20;
+    sun.shadow.camera.left = -20;
+    sun.shadow.camera.right = 20;
 
-    sun.shadow.camera.right = 10;
     sun.shadow.camera.near = 1;
     sun.shadow.camera.far = 1000;
 
@@ -43,7 +43,7 @@ export class World {
 
   addFloor() {
     const geometry = new PlaneGeometry(50, 50);
-    const material = new MeshStandardMaterial({ color: 0xffffff, side: DoubleSide });
+    const material = new MeshStandardMaterial({ color: 0xd8d8d8, side: DoubleSide });
     const plane = new Mesh(geometry, material);
     plane.rotation.x = Math.PI / 2;
     plane.receiveShadow = true;
@@ -53,25 +53,20 @@ export class World {
   }
 
   async build() {
-    const modelLoader = new ModelLoader();
-    const model = await modelLoader.loadModel('../assets/models/tree.gltf');
-    if (model) {
-      model.traverse((child) => {
-        if (child instanceof Mesh) {
-          child.castShadow = true; // Ensure the model casts shadows
-        }
-      });
-      this.scene.add(model);
-
-      for (let i = 0; i < 2; i++) {
-        const model2 = model.clone();
-        model2.position.x = -2 - i * 2;
-        this.scene.add(model2);
-      }
+    for (let i = 0; i < 5; i++) {
+      const tree = preload.get('tree');
+      tree.position.x = -2 - i * 2;
+      tree.position.z -= 1;
+      this.scene.add(tree);
     }
   }
 
   layTrack() {
     this.TrainLine.createRoute();
+    this.TrainLine.createRouteTwo();
+  }
+
+  animate(delta: number) {
+    this.TrainLine.animate(delta);
   }
 }
