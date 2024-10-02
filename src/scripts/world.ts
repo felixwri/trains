@@ -62,8 +62,8 @@ export class World {
   }
 
   layTrack() {
-    this.TrainLine.createRoute();
-    this.TrainLine.createRouteTwo();
+    this.TrainLine.createRoute2();
+    this.TrainLine.createRoute3();
   }
 
   animate(delta: number) {

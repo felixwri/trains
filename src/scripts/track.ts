@@ -23,7 +23,7 @@ export class Track {
   public endVector: Vector3 = new Vector3();
   public addedToScene: boolean = false;
 
-  public trackWidth = 0.25;
+  public trackWidth = 0.22;
 
   public curve: CubicBezierCurve3 = new CubicBezierCurve3();
 
@@ -66,7 +66,17 @@ export class Track {
     return this;
   }
 
-  attachTo(
+  /**
+   * Allows for manual creation of a track piece which is
+   * connected to a previous track piece
+   *
+   * @param previous Previous track piece
+   * @param controlVectorOne This tracks first control point
+   * @param controlVectorTwo This tracks second control point
+   * @param endVector This tracks end point
+   * @returns this
+   */
+  afterManual(
     previous: Track,
     controlVectorOne: Vector3,
     controlVectorTwo: Vector3,
@@ -80,6 +90,96 @@ export class Track {
     this.controlVectorTwo.copy(controlVectorTwo);
     this.endVector.copy(endVector);
     return this;
+  }
+
+  /**
+   * Connects this track to the end of another track piece
+   * This creates a connection which is two way
+   * @param previous Track to attach on to
+   * @returns this
+   */
+  after(previous: Track) {
+    this.previous = previous;
+    previous.next = this;
+
+    this.startVector.copy(previous.endVector);
+
+    const offset = new Vector3().copy(previous.controlVectorTwo).sub(previous.endVector);
+    const newControlVectorOne = new Vector3().copy(this.startVector).add(offset.negate());
+
+    this.controlVectorOne.copy(newControlVectorOne);
+    return this;
+  }
+  /**
+   * Connects this track the start of another track piece.
+   * This creates a one way connection unless the next piece
+   * of track has no previous connections
+   * @param next Track to attach to
+   * @returns this
+   */
+  connectTo(next: Track) {
+    this.next = next;
+
+    if (next.previous !== null) {
+      next.previous = this;
+    }
+
+    this.endVector.copy(next.startVector);
+
+    const offset = new Vector3().copy(next.controlVectorOne).sub(next.startVector);
+    const newControlVectorTwo = new Vector3().copy(this.endVector).add(offset.negate());
+
+    this.controlVectorTwo.copy(newControlVectorTwo);
+    return this;
+  }
+
+  /**
+   * Tries to estimate the scond control point for a track piece
+   * @param point Point to pass through
+   */
+  moveTo(point: Vector3) {
+    this.endVector.copy(point);
+
+    const offset = new Vector3()
+      .copy(this.endVector)
+      .sub(this.controlVectorOne)
+      .normalize()
+      .multiplyScalar(2);
+    this.controlVectorTwo.copy(point.clone().sub(offset));
+  }
+
+  arcTo(point: Vector3) {
+    const start = this.startVector.clone();
+    const control1 = this.controlVectorOne.clone();
+    const end = point.clone();
+
+    const d1 = new Vector3().subVectors(control1, start).normalize();
+    const d2 = new Vector3().subVectors(end, start).normalize();
+
+    const cross = new Vector3().crossVectors(d1, d2).normalize();
+
+    console.log(cross.y);
+    if (cross.y === 0) {
+      this.moveTo(point);
+      return;
+    }
+
+    const displacement = new Vector3().subVectors(control1, start).normalize();
+    const magnitude = start.distanceTo(end);
+
+    let orthogonal;
+    if (cross.y > 0) {
+      orthogonal = new Vector3(-displacement.z, 0, displacement.x).normalize();
+    } else {
+      orthogonal = new Vector3(displacement.z, 0, -displacement.x).normalize();
+    }
+
+    const c1 = start.clone().add(displacement.multiplyScalar(magnitude / 2));
+    const c2 = new Vector3().addVectors(end, orthogonal.multiplyScalar(magnitude / 2));
+
+    this.controlVectorOne.copy(c1);
+    this.controlVectorTwo.copy(c2);
+    this.endVector.copy(end);
   }
 
   generateMesh() {
@@ -126,7 +226,7 @@ export class Track {
       scene.add(sleeper);
     }
 
-    // this.debug(scene);
+    this.debug(scene);
   }
 
   getTangent(distance: number) {
@@ -180,6 +280,6 @@ export class Track {
     debugSphere(curve.v1, colors[1]);
     debugSphere(curve.v2, colors[2]);
     debugSphere(curve.v3, colors[3]);
-    debugSphere(curve.getPoint(0.44), colors[4]);
+    // debugSphere(curve.getPoint(0.44), colors[4]);
   }
 }

@@ -9,7 +9,7 @@ export class Train {
   private wheelSeperation = 3.2;
   private speed = 0.0;
   private acceleration = 0.0001;
-  private maxSpeed = 0.05;
+  private maxSpeed = 0.2;
   private driver: 'stopped' | 'driving' | 'braking' = 'driving';
 
   constructor() {
