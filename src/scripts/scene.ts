@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { CameraController } from './cameraController';
 import { World } from './world';
-import { preload } from './preload';
+import { preload } from './train/preload';
 
 export class MainScene {
   private cube: THREE.Mesh | null;
@@ -11,8 +11,6 @@ export class MainScene {
   private world: World;
 
   private then: number = 0;
-
-  private cos: number = 0;
 
   constructor() {
     this.cube = null;

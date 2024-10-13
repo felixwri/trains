@@ -21,9 +21,9 @@ class Preload {
 
   public async load() {
     console.log('Preloading resources...');
-    await this.loadModel('../assets/models/train.gltf', 'carriage');
-    await this.loadModel('../assets/models/trolly.gltf', 'wheelset');
-    await this.loadModel('../assets/models/tree.gltf', 'tree');
+    await this.loadModel('../../assets/models/train/train.gltf', 'carriage');
+    await this.loadModel('../../assets/models/train/trolly.gltf', 'wheelset');
+    await this.loadModel('../../assets/models/train/station.gltf', 'station');
   }
 
   private async loadModel(url: string, key: string) {

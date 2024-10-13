@@ -14,7 +14,6 @@ export class ModelLoader {
       this.loader.load(
         modelUrl,
         function (gltf) {
-          console.log(gltf.scene.position);
           resolve(gltf.scene);
         },
         undefined,

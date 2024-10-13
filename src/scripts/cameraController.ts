@@ -21,13 +21,17 @@ export class CameraController {
   setup() {
     // window.addEventListener('pointerdown', this.onPointerDown.bind(this));
 
-    this.camera.position.z = 10;
-    this.camera.position.x = 0;
-    this.camera.position.y = 10;
+    this.camera.position.z = -15;
+    this.camera.position.x = 10;
+    this.camera.position.y = -15;
 
     this.controls.maxPolarAngle = Math.PI / 3;
-    this.controls.target = new Vector3(-5, 0, 0);
+    this.controls.minPolarAngle = Math.PI / 3;
+    this.controls.target = new Vector3(0, 0, 0);
     this.controls.update();
+
+    this.controls.disconnect();
+    this.controls.connect();
   }
 
   update() {

@@ -1,17 +1,20 @@
 import {
   BoxGeometry,
-  BufferGeometry,
   CubicBezierCurve3,
-  Line,
-  LineBasicMaterial,
+  InstancedMesh,
+  Matrix4,
   Mesh,
   MeshBasicMaterial,
+  MeshStandardMaterial,
   Quaternion,
   Scene,
   SphereGeometry,
   Vector3
 } from 'three';
 import { Rail } from './rail';
+import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { Line2 } from 'three/addons/lines/Line2.js';
+import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
 export class Track {
   public next: Track | null = null;
@@ -23,14 +26,18 @@ export class Track {
   public endVector: Vector3 = new Vector3();
   public addedToScene: boolean = false;
 
-  public trackWidth = 0.22;
+  private _containsTrain = false;
+
+  private _stop: number = 0;
 
   public curve: CubicBezierCurve3 = new CubicBezierCurve3();
 
   private leftRail: Rail;
   private rightRail: Rail;
-  private sleeperSpacing = 0.5;
-  private sleepers: Mesh[] = [];
+  private sleeperSpacing = 0.4;
+  public trackWidth = 0.22;
+
+  private debugLine: Line2 | null = null;
 
   constructor() {
     this.curve.v0 = this.startVector;
@@ -41,6 +48,34 @@ export class Track {
     this.leftRail = new Rail(this.curve);
 
     this.rightRail = new Rail(this.curve);
+  }
+
+  set containsTrain(value: boolean) {
+    this._containsTrain = value;
+    this.updateDebug();
+  }
+
+  get containsTrain() {
+    return this._containsTrain;
+  }
+
+  set stop(value: number) {
+    this._stop = value;
+    this.updateDebug();
+  }
+
+  get stop() {
+    return this._stop;
+  }
+
+  private updateDebug() {
+    if (this._containsTrain) {
+      this.debugLine?.material.color.set(0xff00ff);
+    } else if (this._stop > 0) {
+      this.debugLine?.material.color.set(0x00ff00);
+    } else {
+      this.debugLine?.material.color.set(0xff0000);
+    }
   }
 
   setPoints(start: Vector3, control1: Vector3, control2: Vector3, end: Vector3) {
@@ -158,7 +193,6 @@ export class Track {
 
     const cross = new Vector3().crossVectors(d1, d2).normalize();
 
-    console.log(cross.y);
     if (cross.y === 0) {
       this.moveTo(point);
       return;
@@ -182,33 +216,42 @@ export class Track {
     this.endVector.copy(end);
   }
 
-  generateMesh() {
+  generateMesh(scene: Scene) {
     this.leftRail.calculateOffset(this.curve, this.trackWidth);
     this.rightRail.calculateOffset(this.curve, this.trackWidth, false);
 
     this.leftRail.generateMesh();
     this.rightRail.generateMesh();
 
+    const sleeperGeometry = new BoxGeometry(0.8, 0.05, 0.15);
+    const sleeperMaterial = new MeshStandardMaterial({ color: 0x291b01, roughness: 1 });
+    // const sleeperMaterial = new MeshBasicMaterial({ color: 0x291b01 });
+
+    const sleeperCount = Math.round(this.curve.getLength() / this.sleeperSpacing);
+
+    const instancedSleepers = new InstancedMesh(sleeperGeometry, sleeperMaterial, sleeperCount);
+
     let count = 0;
+    let index = 0;
+    const forward = new Vector3(0, 0, 1);
+    const matrix = new Matrix4();
+
     while (count < this.curve.getLength()) {
       const position = this.getPositionOnCurve(count);
       const tangent = this.getTangent(count);
 
-      const forward = new Vector3(0, 0, 1);
       const quaternion = new Quaternion().setFromUnitVectors(forward, tangent);
 
-      const sleeper = new Mesh(
-        new BoxGeometry(1, 0.05, 0.2),
-        new MeshBasicMaterial({ color: 0x342200 })
-      );
-
-      sleeper.position.copy(position);
-      sleeper.quaternion.copy(quaternion);
-
-      this.sleepers.push(sleeper);
+      matrix.compose(position, quaternion, new Vector3(1, 1, 1));
+      instancedSleepers.setMatrixAt(index, matrix);
 
       count += this.sleeperSpacing;
+      index++;
     }
+
+    // instancedSleepers.count = index;
+
+    scene.add(instancedSleepers);
   }
 
   addToScene(scene: Scene) {
@@ -222,9 +265,9 @@ export class Track {
       scene.add(this.rightRail.mesh);
     }
 
-    for (const sleeper of this.sleepers) {
-      scene.add(sleeper);
-    }
+    // for (const sleeper of this.sleepers) {
+    //   scene.add(sleeper);
+    // }
 
     this.debug(scene);
   }
@@ -257,16 +300,38 @@ export class Track {
   }
 
   debug(scene: Scene) {
-    this.displayCurve(this.curve, scene);
-    this.displayCurve(this.leftRail.curve, scene);
-    this.displayCurve(this.rightRail.curve, scene);
+    this.displayLine(this.curve, scene);
+    // this.displayPoints(this.leftRail.curve, scene);
+    // this.displayPoints(this.rightRail.curve, scene);
   }
 
-  public displayCurve(curve: CubicBezierCurve3, scene: Scene) {
-    const geometry = new BufferGeometry().setFromPoints(curve.getPoints(50));
-    const curveObject = new Line(geometry, new LineBasicMaterial({ color: 0xff0000 }));
-    scene.add(curveObject);
+  public displayLine(curve: CubicBezierCurve3, scene: Scene) {
+    const points = curve.getPoints(50);
 
+    const positions = [];
+    for (let i = 1; i < points.length - 1; i++) {
+      positions.push(points[i].x, points[i].y + 0.1, points[i].z);
+    }
+
+    const geometry = new LineGeometry();
+    geometry.setPositions(positions);
+
+    const matLine = new LineMaterial({
+      color: 0xff0000,
+      linewidth: 0.2,
+      worldUnits: true,
+      alphaToCoverage: true
+    });
+    const line = new Line2(geometry, matLine);
+    line.computeLineDistances();
+    line.scale.set(1, 1, 1);
+
+    this.debugLine = line;
+    this.updateDebug();
+    scene.add(line);
+  }
+
+  public displayPoints(curve: CubicBezierCurve3, scene: Scene) {
     const sphereGeometry = new SphereGeometry(0.1, 32, 32);
     const colors = [0x00ff00, 0x0000ff, 0x00ffff, 0xff0000, 0xffff00];
 
@@ -280,6 +345,5 @@ export class Track {
     debugSphere(curve.v1, colors[1]);
     debugSphere(curve.v2, colors[2]);
     debugSphere(curve.v3, colors[3]);
-    // debugSphere(curve.getPoint(0.44), colors[4]);
   }
 }

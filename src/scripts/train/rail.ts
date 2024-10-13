@@ -110,7 +110,10 @@ export class Rail {
     ];
     const shape = new Shape(pts);
 
-    const greyMaterial = new MeshPhongMaterial({ color: 0x888888 });
+    const greyMaterial = new MeshPhongMaterial({
+      color: 0x888888,
+      reflectivity: 0
+    });
 
     const mesh = new Mesh(new ExtrudeGeometry(shape, extrudeSettings), greyMaterial);
     mesh.position.y = 0.1;
