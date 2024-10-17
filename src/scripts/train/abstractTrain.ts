@@ -15,6 +15,8 @@ export abstract class AbstractTrain {
   public wheelSeperation = 3.2;
   public speed = 0.0;
 
+  public relativeDistance = 0;
+
   constructor() {
     this.carriage = preload.get('carriage');
     this.bounds.setFromObject(this.carriage);
@@ -32,6 +34,10 @@ export abstract class AbstractTrain {
 
   getHeight() {
     return this.bounds.getSize(new Vector3()).y;
+  }
+
+  getPosition() {
+    return this.carriage.position;
   }
 
   setToTrack(track: Track, offset: number = 0) {

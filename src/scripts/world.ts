@@ -3,6 +3,7 @@ import {
   DirectionalLight,
   Fog,
   Mesh,
+  MeshStandardMaterial,
   PlaneGeometry,
   Scene,
   ShadowMaterial
@@ -46,7 +47,7 @@ export class World {
     const ambient = new AmbientLight(0xc2f1ff, 1);
 
     this.scene.add(ambient);
-    this.scene.fog = new Fog(0xd8d8d8, 20, 60);
+    this.scene.fog = new Fog(0xd8d8d8, 30, 80);
   }
 
   addFloor() {
@@ -62,30 +63,32 @@ export class World {
   }
 
   async build() {
-    // const mainScene = preload.get('scene');
-    // mainScene.castShadow = false;
-    // this.scene.add(mainScene);
-    // const station_cover = preload.get('station_cover');
-    // station_cover.castShadow = true;
-    // this.scene.add(station_cover);
+    const station = preload.get('station');
+    station.receiveShadow = true;
+    station.castShadow = true;
+    station.position.set(0, 0, 2.25);
+    station.rotation.y = Math.PI;
+    let material = station.material as MeshStandardMaterial;
+    material.roughness = 1;
+    material.side = 0;
 
-    const station_plt_1 = preload.get('station');
-    station_plt_1.castShadow = true;
-    station_plt_1.position.set(-3, 0, 2.2);
+    const bridge = preload.get('station_bridge');
+    bridge.castShadow = true;
+    bridge.position.set(0, 0, 2.25);
+    bridge.rotation.y = Math.PI;
+    material = bridge.material as MeshStandardMaterial;
+    material.roughness = 1;
 
-    const station_plt_2 = preload.get('station');
-    station_plt_2.castShadow = true;
-    station_plt_2.position.set(-3, 0, -1);
-    station_plt_2.rotation.y = Math.PI;
+    const roof = preload.get('station_roof');
+    roof.castShadow = true;
+    roof.position.set(0, 0, 2.25);
+    roof.rotation.y = Math.PI;
+    material = roof.material as MeshStandardMaterial;
+    material.roughness = 1;
 
-    const station_plt_3 = preload.get('station');
-    station_plt_3.castShadow = true;
-    station_plt_3.position.set(-3, 0, -4.3);
-    station_plt_3.rotation.y = Math.PI;
-
-    this.scene.add(station_plt_1);
-    this.scene.add(station_plt_2);
-    this.scene.add(station_plt_3);
+    this.scene.add(station);
+    this.scene.add(bridge);
+    this.scene.add(roof);
   }
 
   layTrack() {

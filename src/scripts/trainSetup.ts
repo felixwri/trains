@@ -22,6 +22,7 @@ export class TrainLine {
     this.createRoute2();
     this.createRoute3();
     this.createRoute4();
+    this.createRoute5();
     this.trainRoutes.finish();
   }
 
@@ -32,7 +33,7 @@ export class TrainLine {
         new Vector3(-10, 0, 1.1),
         new Vector3(-5, 0, 1.1),
         new Vector3(-2, 0, 1.1),
-        new Vector3(0, 0, 1.1)
+        new Vector3(4, 0, 1.1)
       )
       .setJunction('station_plt_2')
       .wait(5)
@@ -124,6 +125,43 @@ export class TrainLine {
       .connectToJunction('station_plt_3');
 
     this.addTrain(directive.getRoot());
+  }
+
+  createRoute5() {
+    const directive = this.trainRoutes.createRoute();
+    directive
+      .setRoot(
+        new Vector3(-10, 0, -5.4),
+        new Vector3(-5, 0, -5.4),
+        new Vector3(0, 0, -5.4),
+        new Vector3(4.4, 0, -5.4)
+      )
+      .wait(7)
+      .moveTo(10, 0, -5.4)
+      .moveTo(20, 0, -5.4);
+
+    const start = directive.getTrack();
+
+    directive
+      .arcTo(28, 0, -10)
+      .moveTo(28, 0, -30)
+      .arcTo(20, 0, -40)
+      .moveTo(10, 0, -40)
+      .moveTo(-20, 0, -40)
+      .moveTo(-50, 0, -40);
+
+    const secondStart = directive.getTrack();
+
+    directive
+      .arcTo(-60, 0, -30)
+      .moveTo(-60, 0, -10)
+      .arcTo(-50, 0, -5.4)
+      .moveTo(-30, 0, -5.4)
+      .moveTo(-20, 0, -5.4)
+      .connectToRoot();
+
+    this.addTrain(start);
+    this.addTrain(secondStart);
   }
 
   addTrain(track: Track) {

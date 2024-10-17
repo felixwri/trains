@@ -79,6 +79,10 @@ class TrainRoute {
     return this.root;
   }
 
+  getTrack() {
+    return this.track[this.track.length - 1];
+  }
+
   setRoot(start: Vector3, control1: Vector3, control2: Vector3, end: Vector3) {
     this.root = new Track();
     this.root.setPoints(start, control1, control2, end);
@@ -176,8 +180,6 @@ class TrainRoute {
   wait(time: number) {
     const track = this.track[this.track.length - 1];
     track.stop = time;
-
-    console.log('Waiting for ' + time + ' seconds');
 
     return this;
   }

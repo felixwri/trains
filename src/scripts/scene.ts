@@ -28,8 +28,6 @@ export class MainScene {
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-    // this.initPostprocessing();
-
     this.load();
     return this.renderer;
   }
@@ -41,6 +39,8 @@ export class MainScene {
     this.world.addFloor();
     this.world.build();
     this.world.layTrack();
+
+    this.animate(0);
   }
 
   animate(time: number) {
@@ -48,6 +48,7 @@ export class MainScene {
 
     const delta = (time - this.then) / 16.67; // Normalize delta time to 60fps
     this.then = time;
+
     this.world.animate(delta);
 
     this.renderer.render(this.scene, this.camera.getCamera());
@@ -66,4 +67,11 @@ export class MainScene {
       timeoutId = setTimeout(() => fn.apply(this, args), ms);
     };
   };
+
+  showScene(element: HTMLElement) {
+    preload.onLoaded = () => {
+      console.log('show scene');
+      element.style.opacity = '1';
+    };
+  }
 }

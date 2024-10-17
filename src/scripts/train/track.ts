@@ -13,6 +13,7 @@ import {
 } from 'three';
 import { Rail } from './rail';
 import { LineGeometry } from 'three/addons/lines/LineGeometry.js';
+import { LineSegmentsGeometry } from 'three/addons/lines/LineSegmentsGeometry.js';
 import { Line2 } from 'three/addons/lines/Line2.js';
 import { LineMaterial } from 'three/addons/lines/LineMaterial.js';
 
@@ -225,7 +226,6 @@ export class Track {
 
     const sleeperGeometry = new BoxGeometry(0.8, 0.05, 0.15);
     const sleeperMaterial = new MeshStandardMaterial({ color: 0x291b01, roughness: 1 });
-    // const sleeperMaterial = new MeshBasicMaterial({ color: 0x291b01 });
 
     const sleeperCount = Math.round(this.curve.getLength() / this.sleeperSpacing);
 
@@ -249,8 +249,6 @@ export class Track {
       index++;
     }
 
-    // instancedSleepers.count = index;
-
     scene.add(instancedSleepers);
   }
 
@@ -265,11 +263,7 @@ export class Track {
       scene.add(this.rightRail.mesh);
     }
 
-    // for (const sleeper of this.sleepers) {
-    //   scene.add(sleeper);
-    // }
-
-    this.debug(scene);
+    // this.debug(scene);
   }
 
   getTangent(distance: number) {
@@ -301,8 +295,9 @@ export class Track {
 
   debug(scene: Scene) {
     this.displayLine(this.curve, scene);
-    // this.displayPoints(this.leftRail.curve, scene);
-    // this.displayPoints(this.rightRail.curve, scene);
+    this.displayPoints(this.curve, scene);
+    this.displayPoints(this.leftRail.curve, scene);
+    this.displayPoints(this.rightRail.curve, scene);
   }
 
   public displayLine(curve: CubicBezierCurve3, scene: Scene) {
@@ -322,6 +317,7 @@ export class Track {
       worldUnits: true,
       alphaToCoverage: true
     });
+
     const line = new Line2(geometry, matLine);
     line.computeLineDistances();
     line.scale.set(1, 1, 1);

@@ -3,6 +3,7 @@ import { ModelLoader } from './modelLoader';
 
 class Preload {
   private static instance: Preload;
+  public onLoaded: (() => void) | null = null;
 
   private container: { [key: string]: Mesh } = {};
 
@@ -23,7 +24,13 @@ class Preload {
     console.log('Preloading resources...');
     await this.loadModel('../../assets/models/train/train.gltf', 'carriage');
     await this.loadModel('../../assets/models/train/trolly.gltf', 'wheelset');
-    await this.loadModel('../../assets/models/train/station.gltf', 'station');
+    await this.loadModel('../../assets/models/scene/station.gltf', 'station');
+    await this.loadModel('../../assets/models/scene/station_bridge.gltf', 'station_bridge');
+    await this.loadModel('../../assets/models/scene/station_roof.gltf', 'station_roof');
+    console.log('Preloading complete');
+    if (this.onLoaded) {
+      this.onLoaded();
+    }
   }
 
   private async loadModel(url: string, key: string) {

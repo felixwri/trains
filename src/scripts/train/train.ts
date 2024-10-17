@@ -35,9 +35,11 @@ export class Train {
     let distance = offset;
     for (const carriage of this.carriages) {
       carriage.setToTrack(track, distance);
+      carriage.relativeDistance = distance;
       distance += carriage.getWidth();
     }
     this.engine.setToTrack(track, distance);
+    this.engine.relativeDistance = distance;
   }
 
   update(delta: number) {
@@ -45,5 +47,45 @@ export class Train {
     for (const carriage of this.carriages) {
       carriage.follow(speed, delta);
     }
+    this.sync();
+  }
+
+  sync() {
+    const theta = 0.5;
+    const postion = this.engine.secondWheels.positionOnTrack();
+    const distanceToCarriage = this.carriages[0].secondWheels.positionOnTrack();
+
+    const firstTrack = this.engine.secondWheels.reportTrack();
+    let tempTrack = this.carriages[0].secondWheels.reportTrack();
+    let delta = 0;
+
+    if (firstTrack !== tempTrack) {
+      if (tempTrack === null) return;
+      let dist = tempTrack?.curve.getLength() - this.carriages[0].secondWheels.positionOnTrack();
+
+      tempTrack = tempTrack?.next;
+
+      while (firstTrack !== tempTrack && firstTrack !== null && tempTrack !== null) {
+        dist += tempTrack.curve.getLength();
+        tempTrack = tempTrack.next;
+      }
+
+      delta = postion + dist;
+    } else {
+      delta = postion - distanceToCarriage;
+    }
+
+    if (
+      this.engine.relativeDistance - delta > theta ||
+      this.engine.relativeDistance - delta < -theta
+    ) {
+      console.log('DeSync');
+      this.resync();
+    }
+  }
+
+  resync() {
+    const track = this.engine.secondWheels.reportTrack();
+    this.setToTrack(track);
   }
 }

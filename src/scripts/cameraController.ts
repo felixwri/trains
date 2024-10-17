@@ -8,7 +8,6 @@ export class CameraController {
 
   private raycaster: Raycaster = new Raycaster();
   private pointer = new Vector2();
-
   private point: Vector3 = new Vector3();
 
   constructor(scene: Scene, domElement: HTMLCanvasElement) {
@@ -19,23 +18,16 @@ export class CameraController {
   }
 
   setup() {
-    // window.addEventListener('pointerdown', this.onPointerDown.bind(this));
-
-    this.camera.position.z = -15;
     this.camera.position.x = 10;
-    this.camera.position.y = -15;
+    this.camera.position.y = 12;
+    this.camera.position.z = -15;
 
-    this.controls.maxPolarAngle = Math.PI / 3;
-    this.controls.minPolarAngle = Math.PI / 3;
+    this.camera.position.copy(new Vector3(10, 12, -15));
+
+    this.controls.minPolarAngle = Math.PI / 4;
+    this.controls.maxPolarAngle = Math.PI / 2 - 0.1;
     this.controls.target = new Vector3(0, 0, 0);
     this.controls.update();
-
-    this.controls.disconnect();
-    this.controls.connect();
-  }
-
-  update() {
-    // console.log(this.controls.update());
   }
 
   updateAspect() {
