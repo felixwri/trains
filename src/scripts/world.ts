@@ -10,6 +10,7 @@ import {
 } from 'three';
 import { TrainLine } from './trainSetup';
 import { preload } from './train/preload';
+import { Colors } from '@/const';
 
 export class World {
   private scene: Scene;
@@ -47,7 +48,10 @@ export class World {
     const ambient = new AmbientLight(0xc2f1ff, 1);
 
     this.scene.add(ambient);
-    this.scene.fog = new Fog(0xd8d8d8, 30, 80);
+
+    const color = Colors.background;
+
+    this.scene.fog = new Fog(color, 30, 80);
   }
 
   addFloor() {

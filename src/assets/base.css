@@ -3,9 +3,14 @@
 :root {
   --background: #d8d8d8;
   --text: #000000;
+  --text-inverted: #ffffff;
 
   --accent-primary: rgb(0, 133, 241);
-  --accent-secondary: #00447c;
+  --accent-secondary: rgb(0, 68, 124);
+
+  --grey: #808080;
+
+  --border-radius: 5px;
 
   --font: "Poppins", sans-serif;
 }

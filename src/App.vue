@@ -5,6 +5,7 @@ import NavView from './components/NavView.vue';
 
 <template>
   <header>
+    <title>This</title>
     <NavView />
   </header>
 

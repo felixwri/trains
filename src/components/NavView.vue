@@ -1,22 +1,12 @@
-<script setup lang="ts">
-import NavLink from './NavLink.vue';
-</script>
-
 <template>
   <div>
     <nav>
       <span>
-        <router-link class="title" to="/">FW</router-link>
+        <router-link class="title" to="/">github.com/felixwri</router-link>
       </span>
       <ul>
         <li>
-          <NavLink to="/about">Portfolio</NavLink>
-        </li>
-        <li>
-          <NavLink to="/about">Projects</NavLink>
-        </li>
-        <li>
-          <NavLink to="/about">Contact</NavLink>
+          <!-- <router-link to="/" class="link">Contact</router-link> -->
         </li>
       </ul>
     </nav>
@@ -34,7 +24,9 @@ nav {
   justify-content: space-between;
   align-items: center;
   padding: 0rem 2rem;
-  height: 3rem;
+  height: 4rem;
+
+  font-size: 1rem;
 
   z-index: 99;
 }
@@ -50,5 +42,20 @@ ul {
 .title {
   color: var(--text);
   text-decoration: none;
+  font-weight: bold;
+}
+
+.link {
+  text-decoration: none;
+  color: var(--text);
+  font-family: var(--font);
+  padding: 0.5rem;
+
+  transition: color 0.25s;
+}
+
+.link:hover {
+  color: var(--accent-primary);
+  border-color: var(--accent-primary);
 }
 </style>

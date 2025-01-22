@@ -1,0 +1,143 @@
+{
+  "asset": {
+    "generator": "Khronos glTF Blender I/O v4.1.63",
+    "version": "2.0"
+  },
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Scene",
+      "nodes": [0]
+    }
+  ],
+  "nodes": [
+    {
+      "mesh": 0,
+      "name": "Cube.026",
+      "rotation": [0, -1, 0, 1.6292068494294654e-7],
+      "scale": [1, 0.3999999761581421, 0.947157084941864]
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "Bridge_Bake",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 0,
+          "texCoord": 1
+        },
+        "metallicFactor": 0,
+        "roughnessFactor": 0.5
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cube.055",
+      "primitives": [
+        {
+          "attributes": {
+            "POSITION": 0,
+            "NORMAL": 1,
+            "TEXCOORD_0": 2,
+            "TEXCOORD_1": 3
+          },
+          "indices": 4,
+          "material": 0
+        }
+      ]
+    }
+  ],
+  "textures": [
+    {
+      "sampler": 0,
+      "source": 0
+    }
+  ],
+  "images": [
+    {
+      "mimeType": "image/avif",
+      "name": "Station_Bridge_Bake",
+      "uri": "Station_Bridge_Bake.avif"
+    }
+  ],
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 6848,
+      "max": [-3.8537142276763916, 4.791358470916748, 0.3075118660926819],
+      "min": [-6.291123390197754, 0.7401475310325623, -7.275842666625977],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 6848,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 6848,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 3,
+      "componentType": 5126,
+      "count": 6848,
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 4,
+      "componentType": 5123,
+      "count": 12444,
+      "type": "SCALAR"
+    }
+  ],
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 82176,
+      "byteOffset": 0,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 82176,
+      "byteOffset": 82176,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 54784,
+      "byteOffset": 164352,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 54784,
+      "byteOffset": 219136,
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 24888,
+      "byteOffset": 273920,
+      "target": 34963
+    }
+  ],
+  "samplers": [
+    {
+      "magFilter": 9729,
+      "minFilter": 9987
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 298808,
+      "uri": "station_bridge.bin"
+    }
+  ]
+}

@@ -27,7 +27,6 @@ export class MainScene {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.shadowMap.enabled = true;
     this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-
     this.load();
     return this.renderer;
   }
@@ -46,7 +45,12 @@ export class MainScene {
   animate(time: number) {
     requestAnimationFrame(this.animate.bind(this));
 
-    const delta = (time - this.then) / 16.67; // Normalize delta time to 60fps
+    let delta = (time - this.then) / 16.67; // Normalize delta time to 60fps
+    if (delta > 10) {
+      console.log('Frame delta too high, resetting');
+      delta = 1;
+    }
+
     this.then = time;
 
     this.world.animate(delta);
