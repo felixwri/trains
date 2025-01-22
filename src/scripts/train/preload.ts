@@ -22,11 +22,11 @@ class Preload {
 
   public async load() {
     console.log('Preloading resources...');
-    await this.loadModel('../../assets/models/train/train.gltf', 'carriage');
-    await this.loadModel('../../assets/models/train/trolly.gltf', 'wheelset');
-    await this.loadModel('../../assets/models/scene/station.gltf', 'station');
-    await this.loadModel('../../assets/models/scene/station_bridge.gltf', 'station_bridge');
-    await this.loadModel('../../assets/models/scene/station_roof.gltf', 'station_roof');
+    await this.loadModel('models/train/train.gltf', 'carriage');
+    await this.loadModel('models/train/trolly.gltf', 'wheelset');
+    await this.loadModel('models/scene/station.gltf', 'station');
+    await this.loadModel('models/scene/station_bridge.gltf', 'station_bridge');
+    await this.loadModel('models/scene/station_roof.gltf', 'station_roof');
     console.log('Preloading complete');
     if (this.onLoaded) {
       this.onLoaded();

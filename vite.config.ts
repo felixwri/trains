@@ -16,5 +16,5 @@ export default defineConfig({
   server: {
     host: true
   },
-  base: '/trains/'
+  base: process.env.NODE_ENV === 'production' ? '/trains/' : '/'
 });

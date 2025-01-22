@@ -9,7 +9,12 @@ export class ModelLoader {
   }
 
   async loadModel(path: string): Promise<Group | null> {
+    path = import.meta.env.BASE_URL + path;
+    console.log(path);
     const modelUrl = new URL(path, import.meta.url).href;
+    console.log(modelUrl);
+    console.log(import.meta.url);
+    console.log(import.meta.env.BASE_URL);
     return new Promise((resolve, reject) => {
       this.loader.load(
         modelUrl,

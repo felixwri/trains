@@ -2,7 +2,7 @@
   <div>
     <nav>
       <span>
-        <router-link class="title" to="/">github.com/felixwri</router-link>
+        <router-link class="title" to="/">github.com/felixwri/trains/</router-link>
       </span>
       <ul>
         <li>
